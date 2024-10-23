@@ -10,7 +10,7 @@ interface Props {
 export const CookieZone = ({totalCookies, cookiesPerSecond = 0, onCookieClick}:Props) => {
 
     return(
-        <div className="h-full w-full bg-purple-700 flex flex-col items-center justify-center">
+        <div className="h-full w-full flex flex-col items-center justify-center">
             <p className="text-3xl font-bold">Total cookies : {totalCookies}</p>
             <Image onClick={() => onCookieClick()} src={CookieImg} alt="Big Cookie" className="cursor-pointer h-60 hover:h-64 w-60 hover:w-64 ease-in-out duration-300@`" />
         </div>
