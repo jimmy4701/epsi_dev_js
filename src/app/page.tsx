@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex">
       <div className="left w-1/4 bg-green-500">
-        <CookieZone totalCookies={cookies} />
+        <CookieZone totalCookies={cookies} onCookieClick={() => { setCookies(cookies + 1) }} />
       </div>
       <div className="center flex-1 bg-red-500">
 
