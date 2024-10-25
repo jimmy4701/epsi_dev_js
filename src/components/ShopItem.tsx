@@ -3,6 +3,7 @@ import Image from "next/image"
 
 interface Props {
     item: ShopItemType,
+    onClick: () => void
 }
 
 export const ShopItem = ({item, ...props}:Props) => {
