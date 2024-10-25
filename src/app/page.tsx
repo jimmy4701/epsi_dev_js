@@ -2,7 +2,7 @@
 import { CookieZone } from "@/components/CookieZone";
 import { PurchasedItem } from "@/components/PurchasedItem";
 import { ShopItem } from "@/components/ShopItem";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface ShopItemType {
   id: number,
@@ -27,7 +27,7 @@ export default function Home() {
   const handlePurchasedItem = (item: ShopItemType) => {
     setCookies(cookies - item.price)
 
-    let actualItems = [...purchasedItems]
+    const actualItems = [...purchasedItems]
     const itemIndex = actualItems.findIndex(o => o.id == item.id)
 
     actualItems[itemIndex].total++
@@ -50,7 +50,7 @@ export default function Home() {
         <CookieZone totalCookies={cookies} cps={cookiesPerSecond} onCookieClick={() => { setCookies(cookies + 1) }} />
       </div>
       <div className="center flex-1 bg-red-500 grid grid-cols-4 gap-3 p-5">
-        {purchasedItems.filter(o => o.total > 0).map(item => <PurchasedItem item={item} /> )}
+        {purchasedItems.filter(o => o.total > 0).map(item => <PurchasedItem item={item} key={item.id} /> )}
       </div>
       <div className="right w-1/4 flex flex-col gap-3 p-2">
         {purchasedItems.map(item => 
