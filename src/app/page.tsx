@@ -1,42 +1,64 @@
 'use client'
 import { CookieZone } from "@/components/CookieZone";
 import { ShopItem } from "@/components/ShopItem";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export interface ShopItemType {
   id: number,
   image_url: string,
   label: string,
   price: number,
-  cps: number // Cookies per second
+  cps: number, // Cookies per second
+  total: number
 }
+
+const defaultShopItems : ShopItemType[] = [
+  {id: 1, label: "Mamy", image_url: "https://cdn-icons-png.flaticon.com/512/6247/6247428.png", price: 10, cps: 1, total: 0},
+  {id: 2, label: "Super Mamy", image_url: "https://cdn-icons-png.flaticon.com/512/6247/6247428.png", price: 100, cps: 10, total: 0},
+]
 
 export default function Home() {
 
   const [cookies, setCookies] = useState(0)
+  const [purchasedItems, setPurchasedItems] = useState(defaultShopItems)
+  const [cookiesPerSecond, setCookiesPerSecond] = useState(0)
 
-  const shopItems = useMemo(() => {
-    return [
-        {id: 1, label: "Mamy", image_url: "https://cdn-icons-png.flaticon.com/512/6247/6247428.png", price: 10, cps: 1},
-        {id: 2, label: "Super Mamy", image_url: "https://cdn-icons-png.flaticon.com/512/6247/6247428.png", price: 100, cps: 10},
-      ]
-  }, [cookies])
+  const handlePurchasedItem = (item: ShopItemType) => {
+    setCookies(cookies - item.price)
+
+    let actualItems = [...purchasedItems]
+    const itemIndex = actualItems.findIndex(o => o.id == item.id)
+
+    actualItems[itemIndex].total++
+    setPurchasedItems([...actualItems])
+    setCookiesPerSecond(cookiesPerSecond + item.cps)
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCookies(prevCookies => prevCookies + (cookiesPerSecond / 100))
+    }, 10)
+
+    return () => clearInterval(interval)
+  }, [cookiesPerSecond])
   
 
   return (
     <div className="h-screen w-screen flex">
-      <div className="left w-1/4 bg-green-500">
-        <CookieZone totalCookies={cookies} onCookieClick={() => { setCookies(cookies + 1) }} />
+      <div className="left w-1/4  ">
+        <CookieZone totalCookies={cookies} cps={cookiesPerSecond} onCookieClick={() => { setCookies(cookies + 1) }} />
       </div>
       <div className="center flex-1 bg-red-500">
+        
       </div>
-      <div className="right w-1/4 bg-yellow-500">
-        {shopItems.map(item => 
+      <div className="right w-1/4 flex flex-col gap-3 p-2">
+        {purchasedItems.map(item => 
           <ShopItem 
-            item={item} 
+            item={item}
+            totalCookies={cookies}
             key={item.id} 
-            onClick={() => { setCookies(cookies - item.price)}} 
-          />
+            onClick={() => { handlePurchasedItem(item) }} 
+            />
         )}
       </div>
     </div>
